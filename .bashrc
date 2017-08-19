@@ -116,11 +116,13 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# dodatki
+# MOJE DODATKI
 
-#zapomniałem dlaczego dodano...
-#eval `opam config env`
+# po to by <C-s> nie zatrzymywało wejście do terminalu
+stty -ixon
 
+alias v="vim"
+alias c="cd"
 alias vim="vim.gtk"
 alias rm="rm -i"
 alias py="python3"
@@ -132,7 +134,8 @@ alias ocaml="rlwrap ocaml"
 alias mtop="utop -init .ocamlinit -rectypes"
 alias tr="trash"
 alias chaos="wine ~/.wine/drive_c/Program\ Files\ \(x86\)/BWAPI/Chaoslauncher/Chaoslauncher.exe"
-alias msn="ssh -t psacawa@math.toronto.edu 'links ams.org/mathscinet'"
+# chyba przestarzałe
+#alias msn="ssh -t psacawa@math.toronto.edu 'links ams.org/mathscinet'"
 alias vpamiec="xdg-open ~/Obrazy/vim.gif"
 alias utop="utop -rectypes"
 
@@ -140,7 +143,7 @@ alias utop="utop -rectypes"
 ct () { if [ -a bin/coqtop.byte ]; then COQT_EX="bin/coqtop.byte"; else COQT_EX=coqtop; fi;   if [ -a mtac.v ]; then COQT_ARG="-load-vernac-source mtac"; else COQT_ARG=; fi ; rlwrap $COQT_EX  $COQT_ARG; }
 
 
-# przenieś i przedź do celu
+# przenieś i przedź do celu (już działa)
 pn () { mv $1 $2; cd $2; }
 
 # otwórz (liczby z zn)
@@ -153,5 +156,5 @@ ost () {  file=`sed -n "$(($1 +1)) p" .ost` ; echo $file ; }
 android () { mkdir kopia ; for file in *.{pdf,djvu}; do cp "$file"  "kopia/`echo "$file" | sed -e 's/\]\[/---/g' -e 's/\[\|\]//g'`" ; done;}
 
 # nadać pdf'om poprawne tytuły
-tytul () { for file in *.pdf; do exiftool -overwrite_original -title="$file" "$file"; done;}
+tytuł () { for file in *.pdf; do exiftool -overwrite_original -title="$file" "$file"; done;}
 
