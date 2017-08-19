@@ -1,0 +1,8 @@
+# odkomentuj by mieć terminal jak w vim
+set editing-mode vi
+set keymap vi-command
+
+# nie wiem ?
+#$if coqtop
+#	set show-all-if-ambiguous On
+#$endif
