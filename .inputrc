@@ -1,6 +1,8 @@
 # odkomentuj by mieć terminal jak w vim
 set editing-mode vi
 set keymap vi-command
+# zablokować klawisze  w vi-komendach
+v: ""
 
 # nie wiem ?
 #$if coqtop

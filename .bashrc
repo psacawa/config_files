@@ -120,11 +120,18 @@ fi
 
 # po to by <C-s> nie zatrzymywało wejście do terminalu
 stty -ixon
+# by wyjść z emulatora terminalu trzeba dwa razy wcisnąć Ctrl-D
+export IGNOREEOF=1
 
+# ten ma efekt wprowadzenia aliasów do komend sudo
+alias sudo="sudo "
+alias md="mkdir"
 alias v="vim"
 alias c="cd"
+alias m="make"
 alias vim="vim.gtk"
 alias rm="rm -i"
+alias python="python3"
 alias py="python3"
 alias py3="python3"
 alias bp="bpython3"
@@ -133,24 +140,31 @@ alias coqtop="rlwrap coqtop.byte"
 alias ocaml="rlwrap ocaml"
 alias mtop="utop -init .ocamlinit -rectypes"
 alias tr="trash"
-alias chaos="wine ~/.wine/drive_c/Program\ Files\ \(x86\)/BWAPI/Chaoslauncher/Chaoslauncher.exe"
+alias vlc="rlwrap vlc -I rc"
 # chyba przestarzałe
 #alias msn="ssh -t psacawa@math.toronto.edu 'links ams.org/mathscinet'"
 alias vpamiec="xdg-open ~/Obrazy/vim.gif"
 alias utop="utop -rectypes"
 
 # uruchom coqtopa
-ct () { if [ -a bin/coqtop.byte ]; then COQT_EX="bin/coqtop.byte"; else COQT_EX=coqtop; fi;   if [ -a mtac.v ]; then COQT_ARG="-load-vernac-source mtac"; else COQT_ARG=; fi ; rlwrap $COQT_EX  $COQT_ARG; }
+ct () { if [ -a bin/coqtop.byte ]; then COQT_EX="bin/coqtop.byte"; else COQT_EX=coqtop; fi;   if [ -a mtac.v ]; then COQT_ARG="-load-vernac-source mtac"; elif [ -a ../mtac.v ]; then COQT_ARG="-load-vernac-source ../mtac"; else COQT_ARG=; fi ; rlwrap $COQT_EX  $COQT_ARG; }
+#ct () { if [ -a bin/coqtop.byte ]; then COQT_EX="bin/coqtop.byte"; else COQT_EX=coqtop; fi ; COQT_ARG="-load-vernac-source ~/Kody/coq/mtac"; rlwrap $COQT_EX  $COQT_ARG; }
 
 
 # przenieś i przedź do celu (już działa)
-pn () { mv $1 $2; cd $2; }
+pn () { mv "$1" "$2"; cd "$2"; }
+# zgarnij drugą szybę tmuxa do pwd
+zg () { tmux send-keys -t `tmux list-panes -F '#{pane_id}' | sed -n $(($1 + 1))p` "cd " `pwd` "Enter";}
+# podobne, tylko z szyby początkowej, nie celowej
+goto () { cd `tmux display-message -p -F "#{pane_current_path}" -t$1`;}
+
 
 # otwórz (liczby z zn)
 otw () { if [ "$1" -eq "$1" ] 2>/dev/null; then file=$(ost $1) ; else  file=$1 ; fi; xdg-open "$file" &>/dev/null ; }
+mtw () { if [ "$1" -eq "$1" ] 2>/dev/null; then file=$(ost $1) ; else  file=$1 ; fi; mupdf "$file" & >/dev/null ; }
 
 # ostatnie wyszukiwanie
-ost () {  file=`sed -n "$(($1 +1)) p" .ost` ; echo $file ; } 
+ost () {  file=`sed -n "$(($1 +1)) p" .ost` ; echo $file ; }
 
 # zrób sobowtór dla ebookandroida
 android () { mkdir kopia ; for file in *.{pdf,djvu}; do cp "$file"  "kopia/`echo "$file" | sed -e 's/\]\[/---/g' -e 's/\[\|\]//g'`" ; done;}
@@ -158,3 +172,8 @@ android () { mkdir kopia ; for file in *.{pdf,djvu}; do cp "$file"  "kopia/`echo
 # nadać pdf'om poprawne tytuły
 tytuł () { for file in *.pdf; do exiftool -overwrite_original -title="$file" "$file"; done;}
 
+# kod ściągnięty z śieci dla fzf i ripgrepa
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+bind -x '"\C-p": vim $(fzf);'
