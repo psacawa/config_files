@@ -146,6 +146,11 @@ alias vlc="rlwrap vlc -I rc"
 alias vpamiec="xdg-open ~/Obrazy/vim.gif"
 alias utop="utop -rectypes"
 
+# genialne sieciowe zapytania
+alias pogoda="curl wttr.in"
+alias mip="curl curlmyip.net"
+cftp () { curl --upload-file "$1" "transfer.sh/$1"; }
+
 # uruchom coqtopa
 ct () { if [ -a bin/coqtop.byte ]; then COQT_EX="bin/coqtop.byte"; else COQT_EX=coqtop; fi;   if [ -a mtac.v ]; then COQT_ARG="-load-vernac-source mtac"; elif [ -a ../mtac.v ]; then COQT_ARG="-load-vernac-source ../mtac"; else COQT_ARG=; fi ; rlwrap $COQT_EX  $COQT_ARG; }
 #ct () { if [ -a bin/coqtop.byte ]; then COQT_EX="bin/coqtop.byte"; else COQT_EX=coqtop; fi ; COQT_ARG="-load-vernac-source ~/Kody/coq/mtac"; rlwrap $COQT_EX  $COQT_ARG; }
@@ -177,3 +182,10 @@ tytuł () { for file in *.pdf; do exiftool -overwrite_original -title="$file" "$
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 bind -x '"\C-p": vim $(fzf);'
+
+# dodać kolory do stron man (zob. też ~/.LESS_TERMCAP)
+# Get color support for 'less'
+export LESS="--RAW-CONTROL-CHARS"
+
+# Use colors for less, man, etc.
+[[ -f ~/.LESS_TERMCAP ]] && . ~/.LESS_TERMCAP

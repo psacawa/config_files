@@ -129,7 +129,7 @@ xmap K 5k
 
 " tymczasowy skrót na komentowanie wierszy w coq
 " jest to brzydki hak
-" nnoremap <F1> :s:^\(.*\)$:(\*\1\*):g<cr>:noh<cr>
+nnoremap <F4> :s:^\(.*\)$:(\*\1\*):g<cr>:noh<cr>
 
 " <F2> wywołuje zmiana między względnym a normalnym numerowaniem
 " function! NumberToggle ()
