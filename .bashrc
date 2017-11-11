@@ -145,6 +145,11 @@ alias vlc="rlwrap vlc -I rc"
 #alias msn="ssh -t psacawa@math.toronto.edu 'links ams.org/mathscinet'"
 alias vpamiec="xdg-open ~/Obrazy/vim.gif"
 alias utop="utop -rectypes"
+# komendy do obracania ekranu
+alias obrót-lewo="xrandr --output eDP-1 --rotate left"
+alias obrót-normalny="xrandr --output eDP-1 --rotate normal"
+alias obrót-prawo="xrandr --output eDP-1 --rotate right"
+alias src="source ~/.bashrc"
 
 # genialne sieciowe zapytania
 alias pogoda="curl wttr.in"
@@ -159,9 +164,18 @@ ct () { if [ -a bin/coqtop.byte ]; then COQT_EX="bin/coqtop.byte"; else COQT_EX=
 # przenieś i przedź do celu (już działa)
 pn () { mv "$1" "$2"; cd "$2"; }
 # zgarnij drugą szybę tmuxa do pwd
-zg () { tmux send-keys -t `tmux list-panes -F '#{pane_id}' | sed -n $(($1 + 1))p` "cd " `pwd` "Enter";}
+zg () {
+	if [ ! -z "$1" ]; then
+		tmux send-keys -t `tmux list-panes -F '#{pane_id}' \
+			| sed -n $(($1 + 1))p` "cd " `pwd` "Enter"
+	fi
+}
+
 # podobne, tylko z szyby początkowej, nie celowej
 goto () { cd `tmux display-message -p -F "#{pane_current_path}" -t$1`;}
+# wspiń się przez $1 poziomu w drzewie katalogów
+wsp () { if [[ "$1" -gt 0 ]]; then cd .. && wsp $(( $1 - 1 )); fi }
+bind -x '"\C-h": cd ..;'
 
 
 # otwórz (liczby z zn)
@@ -182,6 +196,12 @@ tytuł () { for file in *.pdf; do exiftool -overwrite_original -title="$file" "$
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 bind -x '"\C-p": vim $(fzf);'
+
+# lokalna instalacja runtime'a języka golang
+export PATH=$PATH:/usr/local/go/bin
+export GOPATH=$HOME/Kody/go
+
+
 
 # dodać kolory do stron man (zob. też ~/.LESS_TERMCAP)
 # Get color support for 'less'

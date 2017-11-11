@@ -59,6 +59,9 @@ map Q <Nop>
 " załadować plik .vimrc ponownie przez \sv
 nnoremap <leader>sv :source $MYVIMRC<cr>
 
+" wkleić tekst z systemowego schowka
+nnoremap <leader>p "+p
+
 " łatwiejszy Omnicomplete przez C-x
 inoremap <C-x> <C-x><C-o>
 " dalsza konfiguracja autouzupełnienia
