@@ -21,11 +21,22 @@ set incsearch
 
 " pasek statusu
 set statusline=%<%F\ %h%m%r%=%-14.(%l,%c%V%)\ %P
+" kolory dla paska
+hi StatusLine ctermbg=white ctermfg=53
+
+" parowane nawiasy będzie można rozróżnić łatwiej
+" NIE DZIAŁA
+" hi MatchParen cterm=none ctermbg=green ctermfg=blue
+
 
 " ZEPSUTE
 " automatyczna indentacja kiedy stosowany operator o
 " nnoremap o :set ai<CR>o<Esc>:set ai!<CR>
 set ai
+
+" przedziel obecny wiersz na dwa w miejscu wskażnika
+nnoremap <leader>o i<Enter><Esc>k$
+
 
 " na czas gdy klawiatura będzie zepsuta
 " automycznie otwórz bufora dla wpsiania komend
@@ -42,8 +53,21 @@ set number
 set tabstop=4
 set ruler
 set backspace=2
-" teraz >> daje jeden indentację
+set noexpandtab
+" teraz >> daje jedną indentację
 set shiftwidth=0
+
+" zginięcie syntaktyczne
+" na razie uważam to za eksperymentalne
+" set foldmethod=indent
+" set foldmethod=syntax
+" set foldlevel=0
+" set foldclose=all
+
+" chrzanić te auto-zgnięcia - ta komenda pozwala to robić ręcznie
+" i zapisuje i ładuje wszystko automatycznie
+autocmd BufWinLeave *.* mkview
+autocmd BufWinEnter *.* silent loadview
 
 " dezaktywować Ins i q (nagrywanie macrów)
 " dezaktywować Q (właczanie trybu Ex)
@@ -104,7 +128,7 @@ nnoremap gl <C-w>l
 
 " łatwiejszie przemieszcanie się między oknami a buforami
 noremap <silent> <C-l> gt
-" noremap <silent> <C-h> gT
+noremap <silent> <C-h> gT
 noremap <silent> <c-k> <C-W>k
 noremap <silent> <c-j> <C-W>j
 
@@ -121,7 +145,7 @@ nmap K 5k
 xmap J 5j
 xmap K 5k
 
-" przemienia WEB z web
+" zamienia WEB z web
 " noremap W w
 " noremap E e
 " noremap B b

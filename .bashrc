@@ -122,6 +122,8 @@ fi
 stty -ixon
 # by wyjść z emulatora terminalu trzeba dwa razy wcisnąć Ctrl-D
 export IGNOREEOF=1
+# fajniejsze dane z kompilatorów rodziny gcc
+export GCC_COLORS="error=01;41:warning=01;45:note=01;46:caret=01;32:locus=01;38;5;6:quote=05;33"
 
 # ten ma efekt wprowadzenia aliasów do komend sudo
 alias sudo="sudo "
@@ -140,7 +142,8 @@ alias coqtop="rlwrap coqtop.byte"
 alias ocaml="rlwrap ocaml"
 alias mtop="utop -init .ocamlinit -rectypes"
 alias tr="trash"
-alias vlc="rlwrap vlc -I rc"
+alias vlc-cli="rlwrap vlc -I rc"
+alias nvlc="nvlc --no-color"
 # chyba przestarzałe
 #alias msn="ssh -t psacawa@math.toronto.edu 'links ams.org/mathscinet'"
 alias vpamiec="xdg-open ~/Obrazy/vim.gif"
@@ -150,9 +153,13 @@ alias obrót-lewo="xrandr --output eDP-1 --rotate left"
 alias obrót-normalny="xrandr --output eDP-1 --rotate normal"
 alias obrót-prawo="xrandr --output eDP-1 --rotate right"
 alias src="source ~/.bashrc"
+alias htop="htop -d 100"
+# uruchacmia ff56 zamiast ten najbardziej aktualny
+alias ff="~/bin/firefox/firefox >/dev/null 2>&1 &"
 
 # genialne sieciowe zapytania
-alias pogoda="curl wttr.in"
+# alias pogoda="curl wttr.in" #angielskie rezultaty
+alias pogoda="curl -H 'Accept-Language:pl' wttr.in"
 alias mip="curl curlmyip.net"
 cftp () { curl --upload-file "$1" "transfer.sh/$1"; }
 
