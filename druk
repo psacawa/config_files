@@ -1,0 +1,34 @@
+#! /bin/bash
+
+uzytkownik=psacawa
+haslo=`cat ~/.hasło`
+drukarka=lwcam
+
+if [ $# == 0 ]; then
+	echo -e "Użycie: \ndruk -d drukarka plik_do_drukowania\nDomyślna drukarka to lwcam"
+fi
+
+while [ $# -gt 0 ]; do
+	case "$1" in
+		-d)
+			drukarka="$2"
+			shift 2
+			;;
+		*)
+			dokument="$1"
+			shift
+			;;
+	esac
+done
+
+#if [[ ! -z $dokument ]]; then
+#	echo Dokumentem do drukowania to \"$dokument\"
+#fi
+#if [[ ! -z $drukarka ]]; then
+#	echo Drukarka do drukowania to \"$drukarka\"
+#fi
+
+if [[ ! -z $dokument ]] && [[ ! -z $drukarka ]];then
+	cat "$dokument" | sshpass -p "$haslo" ssh $uzytkownik@math.toronto.edu \
+		"lp -d "$drukarka" -o number-up=2 -o sides=two-sided-long-edge"
+fi

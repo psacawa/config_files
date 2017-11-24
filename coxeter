@@ -1,0 +1,10 @@
+#! /bin/bash
+
+uzytkownik=psacawa
+haslo=`cat ~/.hasło`
+
+if [ $# -gt 0 ]; then
+	sshpass -p $haslo ssh $uzytkownik@math.toronto.edu "$@"
+else
+	sshpass -p $haslo ssh $uzytkownik@math.toronto.edu
+fi

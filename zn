@@ -1,0 +1,22 @@
+#!/bin/sh
+if [ "$#" -eq 0 ] ; then
+	awk 'BEGIN {c=0} {print c"\t"$0; c++;}' .ost
+else
+	> .ost
+	count=0
+	for file in *; do
+		found=TRUE
+		for var in "$@"; do
+#			echo '"'$var'"'
+			echo $file | grep -iq "$var"
+			if [ "$?" -ne 0 ] ; then
+				found=FALSE
+			fi
+		done
+		if [ "$found" = "TRUE" ]; then
+			echo "$count\t$file"
+			echo $file >> .ost
+			count=$(( $count + 1 ))
+		fi
+	done
+fi

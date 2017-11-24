@@ -1,0 +1,17 @@
+#! /bin/bash
+
+# by zainstalować :
+# sudo apt install sshpass
+# zmień zmienną UZYTKOWNIK na twoje konto na math.toronto.edu
+# stwórz plik ~/.hasło z tekstem hasła lub modyfikuj HASLO
+
+UZYTKOWNIK=psacawa
+HASLO=`cat ~/.hasło`
+KATALOG_CELOWY=.
+
+if [ $# -gt 0 ]; then
+	sshpass -p $HASLO ssh $UZYTKOWNIK@math.toronto.edu "python -c 'import urllib; urllib.urlretrieve (\"http://www.ams.org/mathscinet/pdf/$1.pdf\", \"$1.pdf\")'"
+	sshpass -p $HASLO scp $UZYTKOWNIK@math.toronto.edu:$1.pdf $KATALOG_CELOWY
+else
+	sshpass -p $HASLO ssh -t $UZYTKOWNIK@math.toronto.edu 'elinks www.ams.org/mathscinet'
+fi

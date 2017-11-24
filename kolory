@@ -1,0 +1,11 @@
+#!/bin/bash
+if [ "$1" == -f ]; then
+	GDZIE=3
+else
+	GDZIE=4
+fi
+
+for i in {0..255}; do
+    printf "\x1b[${GDZIE}8;5;${i}mkolor  ${i}\x1b[0m"
+done
+echo
