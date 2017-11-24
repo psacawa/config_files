@@ -10,7 +10,7 @@ syntax on
 
 " włącz rozpoznanie wtyczek zależnych od rozszerzenia pliku?? (głównie merlin)
 " na razie powoduje konflikty między opam merlian a command-t
-filetype plugin on
+" filetype plugin on
 
 " wyłączyć automatyczne komentarze
 " zapomniałem co to robi
@@ -25,8 +25,7 @@ set statusline=%<%F\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 hi StatusLine ctermbg=white ctermfg=53
 
 " parowane nawiasy będzie można rozróżnić łatwiej
-" NIE DZIAŁA
-" hi MatchParen cterm=none ctermbg=green ctermfg=blue
+hi MatchParen cterm=none ctermbg=16 ctermfg=white
 
 
 " ZEPSUTE
@@ -56,6 +55,8 @@ set backspace=2
 set noexpandtab
 " teraz >> daje jedną indentację
 set shiftwidth=0
+" naiwna retabulacja
+" ?
 
 " zginięcie syntaktyczne
 " na razie uważam to za eksperymentalne
@@ -85,6 +86,8 @@ nnoremap <leader>sv :source $MYVIMRC<cr>
 
 " wkleić tekst z systemowego schowka
 nnoremap <leader>p "+p
+" skopiować do końca wierszy
+nnoremap Y y$
 
 " łatwiejszy Omnicomplete przez C-x
 inoremap <C-x> <C-x><C-o>
@@ -251,3 +254,6 @@ endfor
 " ## end of OPAM user-setup addition for vim / base ## keep this line
 " GÓWNO koniec
 
+" ycm odrobaczenie
+let g:ycm_server_keep_logfiles = 1
+let g:ycm_server_log_level = 'debug'
