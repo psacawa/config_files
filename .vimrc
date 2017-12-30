@@ -10,7 +10,11 @@ syntax on
 
 " włącz rozpoznanie wtyczek zależnych od rozszerzenia pliku?? (głównie merlin)
 " na razie powoduje konflikty między opam merlian a command-t
-" filetype plugin on
+filetype plugin on
+
+" dla NERDcommentera
+let g:NERDSpaceDelims = 1
+let g:NERDDefaultAlign = 'left'
 
 " wyłączyć automatyczne komentarze
 " zapomniałem co to robi
@@ -18,11 +22,6 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
 " natychmiastowe wyszukiwanie niepłnych haseł
 set incsearch
-
-" pasek statusu
-set statusline=%<%F\ %h%m%r%=%-14.(%l,%c%V%)\ %P
-" kolory dla paska
-hi StatusLine ctermbg=white ctermfg=53
 
 " parowane nawiasy będzie można rozróżnić łatwiej
 hi MatchParen cterm=none ctermbg=16 ctermfg=white
@@ -67,7 +66,8 @@ set shiftwidth=0
 
 " chrzanić te auto-zgnięcia - ta komenda pozwala to robić ręcznie
 " i zapisuje i ładuje wszystko automatycznie
-autocmd BufWinLeave *.* mkview
+"autocmd BufWinLeave *.* mkview
+autocmd BufWritePost *.* mkview
 autocmd BufWinEnter *.* silent loadview
 
 " dezaktywować Ins i q (nagrywanie macrów)
@@ -77,15 +77,21 @@ inoremap <S-Insert> <Insert>
 map q <Nop>
 map Q <Nop>
 
-" przekierować C-p na C-b (domyślnie stronę wstecz dla vim)
-" obecnie niepotrzebny
-" nnoremap <C-p> <C-b>
+" smartcase wyszukiwanie
+" czyli ścisłe rozróżnianie wielkości liter wtw gdy jest duża litera
+" chyba nie działa
+set smartcase
+
+" po to by n i N nie lądowały na skraju widzialnej części pliku
+set scrolloff=10
 
 " załadować plik .vimrc ponownie przez \sv
 nnoremap <leader>sv :source $MYVIMRC<cr>
 
-" wkleić tekst z systemowego schowka
+" wkleić/skopiować tekst z/do systemowego schowka
 nnoremap <leader>p "+p
+nnoremap <leader>P "+P
+noremap <leader>y "+y
 " skopiować do końca wierszy
 nnoremap Y y$
 
@@ -112,7 +118,17 @@ set hlsearch
 " sprawia że pojedyncze litery są zlikwidowane, zamiast skopiowane przez xXd
 nnoremap x "_x
 nnoremap X "_X
-nnoremap <leader>d "_d
+" nnoremap <leader>d "_d
+
+" macro an usunięcie całego bloku {} i ()
+" wraz z wierszem na którym się rozpoczyna
+nnoremap daB daBdd
+nnoremap dab dabdd
+
+" zlikwidować treść nastepnego/ostatniego nawiasa ()
+" drugi nie działa ...
+onoremap in( :<c-u>normal! f(vi(<cr>
+onoremap il( :<c-u>normal! F)vi(<cr>
 
 " wprowadzenie komendy globalnego znajdź i zamień
 map R :%s:::g<Left><Left><Left>
@@ -148,14 +164,17 @@ nmap K 5k
 xmap J 5j
 xmap K 5k
 
-" zamienia WEB z web
-" noremap W w
-" noremap E e
-" noremap B b
-" noremap w W
-" noremap e E
-" noremap b B
+" połączyć wiersze
+nnoremap Q J
 
+" makro na dodawanie i usunięcia komentarzy do bloków w trybie wizualnym
+" wyłacznie dla komentarzy // w stylu c
+vmap + :s:^://:g<CR><Space>
+vmap - :s:^//::g<CR><Space>
+
+" zostać w trybie wizualniym po zmianach na indentację
+vnoremap < <gv
+vnoremap > >gv
 
 " tymczasowy skrót na komentowanie wierszy w coq
 " jest to brzydki hak
@@ -190,13 +209,38 @@ nnoremap <silent> <Space> :silent noh<Bar>echo<cr>
 " <F9> wywołuje make na obecnym pliku w szybie tmuksowym pod obecną
 map <F9> :execute "!tmux-komp %"<cr>
 
+" by widać informacje o zginięciach w 'rynsztoku'
+noremap <F8>- :set foldcolumn-=1<cr>
+noremap <F8>+ :set foldcolumn+=1<cr>
+
+" manewrowanie przez listę błedów (:lopen)
+" nnoremap -n :lnext<CR>
+" nnoremap -N :lprev<CR>
+
+" YCM skróty
+" wymusić ponowną kompilację przez ycm
+nnoremap <F5> :YcmForceCompileAndDiagnostics<CR>
+nnoremap <leader>ff :YcmCompleter FixIt<CR>:ccl<CR>
+nnoremap <leader>ft :YcmCompleter GetType<CR>
+nnoremap <leader>fc :YcmCompleter GoToDeclaration<CR>
+nnoremap <leader>fl :YcmCompleter GoToDefinition<CR>
+" tylko dla pythona, js, ...
+" nnoremap <leader>fr :YcmCompleter GoToReferences<CR>
+
 " zmiany graficzne
 " kolor podświetlenia
-hi Search cterm=NONE ctermfg=black ctermbg=3
-" hi Search guibg=peru guifg=wheat
+hi Search cterm=none ctermfg=black ctermbg=3
+" zmiany koloru podświetlenia w trybie wizualnym
+hi Visual cterm=none ctermbg=235
+
+" pasek statusu
+set statusline=%<%F\ %h%m%r%=%-14.(%l,%c%V%)\ %P
+" kolory dla paska
+hi StatusLine ctermbg=white ctermfg=53
 
 " kolory dla zginięciach
 hi Folded ctermbg=10 ctermfg=16
+hi FoldColumn ctermbg=15  ctermfg=black
 
 " podświetlenie pasek okien
 " hi TabLineFill ctermfg=LightGreen ctermbg=DarkGreen
@@ -208,11 +252,30 @@ hi Folded ctermbg=10 ctermfg=16
 " również 54 jest dobdy z motywem systemowym
 " match TabGroup /^\/\/\|\t/
 
+" ycm graficzna konfiguracja
+hi YcmErrorLine cterm=none
+hi YcmWarningLine cterm=none
+" różne opcje YCM dotyczące błędów
+let g:ycm_show_diagnostics_ui =1
+" symbole w rynsztoku (wyłączone)
+let g:ycm_error_symbol = '>>'
+let g:ycm_warning_symbol = '<<'
+" wyłączyć autopodświetlenie błedów i uwas dla YCM?
+let g:ycm_enable_diagnostic_signs=1
+let g:ycm_enable_diagnostic_highlighting =0
+nnoremap <F6> :let g:ycm_enable_diagnostic_highlighting!<cr>
+" klawisz do wyśœietlenia pełnego tekstu błędów kompilatora
+let g:ycm_key_detailed_diagnostics = '<leader>d'
+let g:ycm_always_populate_location_list=1
+" specyficznie dla YCM
+nnoremap g< :lnext<cr>
+nnoremap g> :lprevious<cr>
+
 " NERDtree zignoruje pewne rozszerzenia plików
 let NERDTreeIgnore = ['\.cmi$', '\.cmo$', '\.cmx','\.cma', '\.ml.d$', '\.mli.d$', '\.o$', '\.mllib$', '\.mllib.d$', '\.a$']
 
-" naprawić konflikt merlina/ocamla z komendą-t
-nmap <silent> <Leader>y <Plug>(CommandT)
+" naprawić konflikt merlina/ocamla z komendą-t (którego zresztą już nie uzywamy)
+" nmap <silent> <Leader>y <Plug>(CommandT)
 " nmap <Leader>y @:MerlinTypeOf<CR>
 " xmap <Leader>y @:MerlinTypeOfSel<CR>
 
@@ -257,3 +320,7 @@ endfor
 " ycm odrobaczenie
 let g:ycm_server_keep_logfiles = 1
 let g:ycm_server_log_level = 'debug'
+
+" autopoprawa częstych błędów ortograficznych
+iabbrev ednl endl
+iabbrev cotu cout

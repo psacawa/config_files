@@ -144,9 +144,11 @@ alias mtop="utop -init .ocamlinit -rectypes"
 alias tr="trash"
 alias vlc-cli="rlwrap vlc -I rc"
 alias nvlc="nvlc --no-color"
+alias r="run"
 # chyba przestarzałe
 #alias msn="ssh -t psacawa@math.toronto.edu 'links ams.org/mathscinet'"
 alias vpamiec="xdg-open ~/Obrazy/vim.gif"
+alias gdbpamiec="xdg-open ~/Obrazy/gdb-refcard.pdf"
 alias utop="utop -rectypes"
 # komendy do obracania ekranu
 alias obrót-lewo="xrandr --output eDP-1 --rotate left"
@@ -156,12 +158,15 @@ alias src="source ~/.bashrc"
 alias htop="htop -d 100"
 # uruchacmia ff56 zamiast ten najbardziej aktualny
 alias ff="~/bin/firefox/firefox >/dev/null 2>&1 &"
+alias cox="coxeter"
 
 # genialne sieciowe zapytania
 # alias pogoda="curl wttr.in" #angielskie rezultaty
 alias pogoda="curl -H 'Accept-Language:pl' wttr.in"
 alias mip="curl curlmyip.net"
 cftp () { curl --upload-file "$1" "transfer.sh/$1"; }
+
+mr () { make $1 ; if [ $? -eq 0 ]; then run ./"$@"; fi;}
 
 # uruchom coqtopa
 ct () { if [ -a bin/coqtop.byte ]; then COQT_EX="bin/coqtop.byte"; else COQT_EX=coqtop; fi;   if [ -a mtac.v ]; then COQT_ARG="-load-vernac-source mtac"; elif [ -a ../mtac.v ]; then COQT_ARG="-load-vernac-source ../mtac"; else COQT_ARG=; fi ; rlwrap $COQT_EX  $COQT_ARG; }
@@ -216,3 +221,22 @@ export LESS="--RAW-CONTROL-CHARS"
 
 # Use colors for less, man, etc.
 [[ -f ~/.LESS_TERMCAP ]] && . ~/.LESS_TERMCAP
+
+# rzekoma ma naprawić nagrywanie historii basha w tmuxa...
+# avoid duplicates..
+export HISTCONTROL=ignoredups:erasedups
+# append history entries..
+shopt -s histappend
+# After each command, save and reload history
+
+# po to be rozdzielać historię basha w oddzielne szyby tmuxowe
+export TMUX_SESSION=
+if [[ -n ${TMUX+set} ]]; then
+    TMUX_SESSION=$(tmux display-message -p "#S")
+    # can end up wrong if I move a pane to a different session, but I rarely do that
+    if [[ -n ${TMUX_SESSION+set} ]]; then
+        [[ -d ~/.bash_history.d ]] || mkdir -p ~/.bash_history.d
+        export HISTFILE="$HOME/.bash_history.d/${TMUX_SESSION}"
+        [[ -f $HISTFILE ]] || cp "$HOME"/.bash_history "$HISTFILE"
+    fi
+fixport PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
